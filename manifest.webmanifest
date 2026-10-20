@@ -1,0 +1,14 @@
+{
+  "name": "HELENA",
+  "short_name": "HELENA",
+  "description": "Un espacio privado para hablar con cariño.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "orientation": "portrait",
+  "icons": [
+    {"src":"./assets/helena-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}

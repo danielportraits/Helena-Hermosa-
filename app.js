@@ -50,23 +50,18 @@ const NEEDS = {
 /* MÚSICA INSTRUMENTAL */
 
 function setupMusic() {
-  const audio = $("ambientAudio");
+  let audio = $("ambientAudio");
 
+  // Si index.html no tiene reproductor, lo creamos.
   if (!audio) {
-    console.warn(
-      'No existe el elemento "ambientAudio" en index.html.'
-    );
-    return;
+    audio = document.createElement("audio");
+    audio.id = "ambientAudio";
+    document.body.appendChild(audio);
   }
 
   state.audio = audio;
 
-  // Utiliza el mismo archivo de audio durante toda la sesión.
-  audio.src = new URL(
-    "./helena-instrumental.mp3",
-    import.meta.url
-  ).href;
-
+  audio.src = new URL("./helena-instrumental.mp3", import.meta.url).href;
   audio.loop = true;
   audio.volume = 0.35;
   audio.preload = "auto";
@@ -84,37 +79,28 @@ function setupMusic() {
   });
 
   audio.addEventListener("error", () => {
-    console.error(
-      "No se pudo cargar helena-instrumental.mp3.",
-      audio.error
-    );
+    console.error("No se pudo cargar helena-instrumental.mp3.", audio.error);
   });
 
-  // Intento automático al abrir la aplicación.
+  // Intentar reproducir al abrir la página.
   startMusic();
 }
 
 async function startMusic() {
   const audio = state.audio;
-
   if (!audio || !audio.paused) return;
 
   try {
     await audio.play();
     state.audioStarted = true;
   } catch (error) {
-    // El navegador puede exigir una interacción del usuario.
-    console.info(
-      "La reproducción automática está bloqueada. Se reintentará al interactuar.",
-      error
-    );
+    // Algunos navegadores bloquean la reproducción automática con sonido.
+    console.info("El navegador bloqueó la reproducción automática.", error);
   }
 }
 
 async function toggleMusic() {
-  if (!state.audio) {
-    setupMusic();
-  }
+  if (!state.audio) setupMusic();
 
   const audio = state.audio;
   if (!audio) return;
@@ -126,18 +112,12 @@ async function toggleMusic() {
       announce("Música activada. ❤️");
     } catch (error) {
       console.error("Error al reproducir la música:", error);
-      announce(
-        "No se pudo reproducir la música. Comprueba el archivo de audio."
-      );
+      announce("No se pudo reproducir la música. Comprueba el archivo de audio.");
     }
   } else {
     audio.pause();
     announce("Música pausada.");
   }
-}
-
-function $(id) {
-  return document.getElementById(id);
 }
 
 function showView(id) {
@@ -472,13 +452,16 @@ async function init() {
   $("refreshAdmin").addEventListener("click", loadAdmin);
   $("musicToggle").addEventListener("click", toggleMusic);
 
-  // Si el navegador bloquea el autoplay, el primer toque lo reintenta.
-  const retryMusic = () => {
-    if (state.audio && state.audio.paused) startMusic();
-  };
+  // Reintentar el autoplay al primer toque fuera del botón de música.
+  document.addEventListener("pointerdown", event => {
+    if (event.target.closest("#musicToggle")) return;
+    if (state.audio?.paused) startMusic();
+  }, { once: true });
 
-  document.addEventListener("pointerdown", retryMusic, { once: true });
-  document.addEventListener("keydown", retryMusic, { once: true });
+  document.addEventListener("keydown", event => {
+    if (event.target.closest("#musicToggle")) return;
+    if (state.audio?.paused) startMusic();
+  }, { once: true });
 
   window.addEventListener("beforeinstallprompt", event => {
     event.preventDefault();

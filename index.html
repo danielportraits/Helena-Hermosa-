@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="es">
 <head>
@@ -5,9 +6,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#050505">
   <meta name="description" content="Un espacio privado para hablar con cariño.">
+
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" href="./assets/helena-icon.svg" type="image/svg+xml">
+  <link rel="icon" href="./helena-icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
+
   <title>HELENA</title>
 </head>
 <body>
@@ -15,6 +18,7 @@
     <div class="splash-name">HELENA</div>
     <div class="splash-line"></div>
   </div>
+
   <header class="topbar">
     <button class="wordmark" id="homeBtn" aria-label="Inicio">HELENA</button>
     <div class="top-actions">
@@ -29,10 +33,20 @@
       <p class="eyebrow">UN ESPACIO PARA SENTIR</p>
       <h1>Un corazón,<br><em>muchas cosas</em><br>por decir.</h1>
       <p class="lead">Un lugar tranquilo para compartir lo que te hace feliz, lo que te preocupa y lo que necesitas.</p>
+
       <div class="heart-stage">
         <div class="heart-glow"></div>
-        <svg class="big-heart" viewBox="0 0 100 90" aria-hidden="true"><path d="M50 84 C42 76 8 53 8 29 C8 4 38 -1 50 20 C62 -1 92 4 92 29 C92 53 58 76 50 84Z" fill="url(#heartGradient)"/><defs><linearGradient id="heartGradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff7a92"/><stop offset="1" stop-color="#7b102a"/></linearGradient></defs></svg>
+        <svg class="big-heart" viewBox="0 0 100 90" aria-hidden="true">
+          <path d="M50 84 C42 76 8 53 8 29 C8 4 38 -1 50 20 C62 -1 92 4 92 29 C92 53 58 76 50 84Z" fill="url(#heartGradient)"/>
+          <defs>
+            <linearGradient id="heartGradient" x1="0" y1="0" x2="1" y2="1">
+              <stop stop-color="#ff7a92"/>
+              <stop offset="1" stop-color="#7b102a"/>
+            </linearGradient>
+          </defs>
+        </svg>
       </div>
+
       <button class="primary-button" id="startBtn">Entrar a HELENA <span>↗</span></button>
       <p class="fineprint">Tus sentimientos merecen un lugar seguro y sin juicios.</p>
     </section>
@@ -42,64 +56,188 @@
       <p class="eyebrow">TU ESPACIO PERSONAL</p>
       <h2>Qué bueno tenerte aquí.</h2>
       <p class="muted">Inicia sesión con la cuenta que te hayan preparado para HELENA.</p>
+
       <form id="authForm" class="panel form-stack">
-        <label>Correo electrónico<input id="email" type="email" autocomplete="username" required placeholder="tu@correo.com"></label>
-        <label>Contraseña<input id="password" type="password" autocomplete="current-password" required minlength="6" placeholder="Tu contraseña"></label>
+        <label>Correo electrónico
+          <input id="email" type="email" autocomplete="username" required placeholder="tu@correo.com">
+        </label>
+        <label>Contraseña
+          <input id="password" type="password" autocomplete="current-password" required minlength="6" placeholder="Tu contraseña">
+        </label>
         <button class="primary-button" type="submit">Entrar <span>↗</span></button>
         <p id="authError" class="error" role="status"></p>
       </form>
+
       <p class="fineprint">La aplicación no crea cuentas por sí sola. El administrador las prepara desde Supabase.</p>
     </section>
 
     <section id="homeView" class="view" hidden>
       <div class="greeting-row">
-        <div><p class="eyebrow">TU RINCÓN PRIVADO</p><h2 id="helloTitle">Hola, Helena.</h2></div>
+        <div>
+          <p class="eyebrow">TU RINCÓN PRIVADO</p>
+          <h2 id="helloTitle">Hola, Helena.</h2>
+        </div>
         <div class="avatar-heart">♡</div>
       </div>
+
       <div class="heart-card panel">
-        <div class="heart-card-copy"><p class="eyebrow">UN RECORDATORIO</p><h3>Lo que sientes<br>importa.</h3><p class="muted">Este corazón es un símbolo de lo que compartimos, no una calificación de tus sentimientos.</p></div>
-        <div class="meter-heart-wrap"><div class="meter-glow"></div><svg class="meter-heart" viewBox="0 0 100 90" aria-label="Corazón simbólico"><defs><linearGradient id="meterFill" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#7e102b"/><stop offset="1" stop-color="#ff8398"/></linearGradient><clipPath id="heartClip"><path d="M50 84 C42 76 8 53 8 29 C8 4 38 -1 50 20 C62 -1 92 4 92 29 C92 53 58 76 50 84Z"/></clipPath></defs><path d="M50 84 C42 76 8 53 8 29 C8 4 38 -1 50 20 C62 -1 92 4 92 29 C92 53 58 76 50 84Z" fill="#241016" stroke="#b54b63" stroke-width="1.5"/><g clip-path="url(#heartClip)"><rect id="heartFillRect" x="0" y="90" width="100" height="90" fill="url(#meterFill)"/></g></svg></div>
+        <div class="heart-card-copy">
+          <p class="eyebrow">UN RECORDATORIO</p>
+          <h3>Lo que sientes<br>importa.</h3>
+          <p class="muted">Este corazón es un símbolo de lo que compartimos, no una calificación de tus sentimientos.</p>
+        </div>
+        <div class="meter-heart-wrap">
+          <div class="meter-glow"></div>
+          <svg class="meter-heart" viewBox="0 0 100 90" aria-label="Corazón simbólico">
+            <defs>
+              <linearGradient id="meterFill" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0" stop-color="#7e102b"/>
+                <stop offset="1" stop-color="#ff8398"/>
+              </linearGradient>
+              <clipPath id="heartClip">
+                <path d="M50 84 C42 76 8 53 8 29 C8 4 38 -1 50 20 C62 -1 92 4 92 29 C92 53 58 76 50 84Z"/>
+              </clipPath>
+            </defs>
+            <path d="M50 84 C42 76 8 53 8 29 C8 4 38 -1 50 20 C62 -1 92 4 92 29 C92 53 58 76 50 84Z" fill="#241016" stroke="#b54b63" stroke-width="1.5"/>
+            <g clip-path="url(#heartClip)">
+              <rect id="heartFillRect" x="0" y="90" width="100" height="90" fill="url(#meterFill)"/>
+            </g>
+          </svg>
+        </div>
       </div>
-      <div class="section-heading"><div><p class="eyebrow">PUEDES EMPEZAR POR AQUÍ</p><h3>¿Qué necesitas hoy?</h3></div></div>
+
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">PUEDES EMPEZAR POR AQUÍ</p>
+          <h3>¿Qué necesitas hoy?</h3>
+        </div>
+      </div>
+
       <div class="need-grid">
         <button class="need-card" data-need="escuchar"><span class="need-icon">☾</span><strong>Necesito que me escuches</strong><small>Quiero contar algo.</small></button>
         <button class="need-card" data-need="carino"><span class="need-icon">♡</span><strong>Quiero un poquito de cariño</strong><small>Necesito palabras bonitas.</small></button>
         <button class="need-card" data-need="dificil"><span class="need-icon">✧</span><strong>Hoy no me siento muy bien</strong><small>Quiero compartir cómo estoy.</small></button>
         <button class="need-card" data-need="hablar"><span class="need-icon">…</span><strong>Simplemente quiero hablar</strong><small>Me gustaría conversar.</small></button>
       </div>
+
       <form id="needForm" class="panel form-stack" hidden>
         <button type="button" class="back-link" id="cancelNeed">← Elegir otra opción</button>
-        <p class="eyebrow">TE ESTAMOS ESCUCHANDO</p><h3 id="needTitle">Cuéntame un poquito más</h3>
-        <label>Si quieres, puedes escribir un mensaje<textarea id="needMessage" rows="4" maxlength="1500" placeholder="Escribe aquí lo que te gustaría compartir…"></textarea></label>
-        <p class="muted small">Tus respuestas podrán ser leídas por la persona administradora de HELENA. Puedes dejar el mensaje en blanco.</p>
-        <button class="primary-button" type="submit">Enviar con cariño <span>♡</span></button><p id="needStatus" class="status" role="status"></p>
-      </form>
-      <div class="section-heading"><div><p class="eyebrow">SI QUIERES ESCRIBIR CON CALMA</p><h3>Mi diario</h3></div></div>
-      <form id="journalForm" class="panel form-stack">
-        <label>¿Qué te gustaría contar hoy?<textarea id="journalText" rows="4" maxlength="3000" required placeholder="Puedes escribir lo que te hizo feliz, lo que te dolió o lo que quisieras que cambiara…"></textarea></label>
-        <label class="select-label">¿Cómo te gustaría clasificarlo?
-          <select id="journalCategory"><option value="algo_bonito">Algo bonito</option><option value="necesito_hablar">Necesito hablar de algo</option><option value="algo_me_dolio">Algo me dolió</option><option value="quiero_mejorar">Quiero que mejoremos</option><option value="solo_escribir">Solo quiero escribir</option></select>
+        <p class="eyebrow">TE ESTAMOS ESCUCHANDO</p>
+        <h3 id="needTitle">Cuéntame un poquito más</h3>
+        <label>Si quieres, puedes escribir un mensaje
+          <textarea id="needMessage" rows="4" maxlength="1500" placeholder="Escribe aquí lo que te gustaría compartir…"></textarea>
         </label>
-        <button class="secondary-button" type="submit">Guardar en mi diario</button><p id="journalStatus" class="status" role="status"></p>
+        <p class="muted small">Tus respuestas podrán ser leídas por la persona administradora de HELENA. Puedes dejar el mensaje en blanco.</p>
+        <button class="primary-button" type="submit">Enviar con cariño <span>♡</span></button>
+        <p id="needStatus" class="status" role="status"></p>
       </form>
-      <div class="section-heading"><div><p class="eyebrow">PEQUEÑOS DETALLES</p><h3>Una carta para ti</h3></div></div>
-      <div id="lettersList" class="letter-list"><p class="muted">Las cartas sorpresa aparecerán aquí cuando estén preparadas para ti.</p></div>
+
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">SI QUIERES ESCRIBIR CON CALMA</p>
+          <h3>Mi diario</h3>
+        </div>
+      </div>
+
+      <form id="journalForm" class="panel form-stack">
+        <label>¿Qué te gustaría contar hoy?
+          <textarea id="journalText" rows="4" maxlength="3000" required placeholder="Puedes escribir lo que te hizo feliz, lo que te dolió o lo que quisieras que cambiara…"></textarea>
+        </label>
+        <label class="select-label">¿Cómo te gustaría clasificarlo?
+          <select id="journalCategory">
+            <option value="algo_bonito">Algo bonito</option>
+            <option value="necesito_hablar">Necesito hablar de algo</option>
+            <option value="algo_me_dolio">Algo me dolió</option>
+            <option value="quiero_mejorar">Quiero que mejoremos</option>
+            <option value="solo_escribir">Solo quiero escribir</option>
+          </select>
+        </label>
+        <button class="secondary-button" type="submit">Guardar en mi diario</button>
+        <p id="journalStatus" class="status" role="status"></p>
+      </form>
+
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">PEQUEÑOS DETALLES</p>
+          <h3>Una carta para ti</h3>
+        </div>
+      </div>
+      <div id="lettersList" class="letter-list">
+        <p class="muted">Las cartas sorpresa aparecerán aquí cuando estén preparadas para ti.</p>
+      </div>
+
       <div id="adminArea" hidden>
-        <div class="admin-heading"><div><p class="eyebrow">SOLO ADMINISTRACIÓN</p><h2>Tu panel privado</h2></div><span class="admin-pill">PRIVADO</span></div>
-        <div class="admin-stats"><div class="panel stat"><span>Solicitudes de cariño</span><strong id="needCount">0</strong></div><div class="panel stat"><span>Entradas del diario</span><strong id="journalCount">0</strong></div></div>
-        <div class="section-heading"><div><p class="eyebrow">MENSAJES COMPARTIDOS</p><h3>Lo que Helena ha contado</h3></div><button class="text-button" id="refreshAdmin">Actualizar</button></div>
-        <div id="adminEntries" class="entry-list"><p class="muted">Cargando entradas…</p></div>
-        <div class="section-heading"><div><p class="eyebrow">RESPUESTAS</p><h3>Enviar una respuesta</h3></div></div>
-        <form id="replyForm" class="panel form-stack"><label>Mensaje para Helena<textarea id="replyText" rows="3" maxlength="1500" required placeholder="Quiero que sepas que…"></textarea></label><button class="primary-button" type="submit">Enviar mensaje</button><p id="replyStatus" class="status"></p></form>
-        <div class="section-heading"><div><p class="eyebrow">GESTIONAR SORPRESAS</p><h3>Preparar una carta</h3></div></div>
-        <form id="letterForm" class="panel form-stack"><label>Título<input id="letterTitle" required maxlength="100" placeholder="Para un día difícil"></label><label>Mensaje<textarea id="letterBody" rows="4" required maxlength="3000" placeholder="Escribe tu carta…"></textarea></label><button class="secondary-button" type="submit">Guardar carta para Helena</button><p id="letterStatus" class="status"></p></form>
+        <div class="admin-heading">
+          <div>
+            <p class="eyebrow">SOLO ADMINISTRACIÓN</p>
+            <h2>Tu panel privado</h2>
+          </div>
+          <span class="admin-pill">PRIVADO</span>
+        </div>
+
+        <div class="admin-stats">
+          <div class="panel stat"><span>Solicitudes de cariño</span><strong id="needCount">0</strong></div>
+          <div class="panel stat"><span>Entradas del diario</span><strong id="journalCount">0</strong></div>
+        </div>
+
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">MENSAJES COMPARTIDOS</p>
+            <h3>Lo que Helena ha contado</h3>
+          </div>
+          <button class="text-button" id="refreshAdmin">Actualizar</button>
+        </div>
+        <div id="adminEntries" class="entry-list">
+          <p class="muted">Cargando entradas…</p>
+        </div>
+
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">RESPUESTAS</p>
+            <h3>Enviar una respuesta</h3>
+          </div>
+        </div>
+        <form id="replyForm" class="panel form-stack">
+          <label>Mensaje para Helena
+            <textarea id="replyText" rows="3" maxlength="1500" required placeholder="Quiero que sepas que…"></textarea>
+          </label>
+          <button class="primary-button" type="submit">Enviar mensaje</button>
+          <p id="replyStatus" class="status"></p>
+        </form>
+
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">GESTIONAR SORPRESAS</p>
+            <h3>Preparar una carta</h3>
+          </div>
+        </div>
+        <form id="letterForm" class="panel form-stack">
+          <label>Título
+            <input id="letterTitle" required maxlength="100" placeholder="Para un día difícil">
+          </label>
+          <label>Mensaje
+            <textarea id="letterBody" rows="4" required maxlength="3000" placeholder="Escribe tu carta…"></textarea>
+          </label>
+          <button class="secondary-button" type="submit">Guardar carta para Helena</button>
+          <p id="letterStatus" class="status"></p>
+        </form>
       </div>
     </section>
+
     <section id="messageView" class="view narrow" hidden>
-      <div class="message-symbol">♡</div><p class="eyebrow">UN MENSAJE PARA TI</p><h2 id="messageTitle">Aquí tienes una respuesta.</h2><div id="messageBody" class="panel letter-body"></div><button class="primary-button" id="backHome">Volver a HELENA</button>
+      <div class="message-symbol">♡</div>
+      <p class="eyebrow">UN MENSAJE PARA TI</p>
+      <h2 id="messageTitle">Aquí tienes una respuesta.</h2>
+      <div id="messageBody" class="panel letter-body"></div>
+      <button class="primary-button" id="backHome">Volver a HELENA</button>
     </section>
-    <footer class="footer"><span>HELENA</span><span>Hecho con cariño · <span id="year"></span></span></footer>
+
+    <footer class="footer">
+      <span>HELENA</span>
+      <span>Hecho con cariño · <span id="year"></span></span>
+    </footer>
   </main>
+
   <audio id="ambientAudio" loop preload="none"></audio>
   <script type="module" src="./app.js"></script>
 </body>

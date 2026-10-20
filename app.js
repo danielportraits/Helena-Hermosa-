@@ -22,6 +22,8 @@ const state = {
   selectedNeed: null,
   deferredInstall: null,
   audioOn: false,
+  audio: null,
+  audioStarted: false,
   meterLevel: 50,
   meterEvents: []
 };
@@ -45,10 +47,105 @@ const NEEDS = {
   }
 };
 
+/* MÚSICA INSTRUMENTAL */
+
+function setupMusic() {
+  const audio = $("ambientAudio");
+
+  if (!audio) {
+    console.warn(
+      'No existe el elemento "ambientAudio" en index.html.'
+    );
+    return;
+  }
+
+  state.audio = audio;
+
+  // Utiliza el mismo archivo de audio durante toda la sesión.
+  audio.src = new URL(
+    "./helena-instrumental.mp3",
+    import.meta.url
+  ).href;
+
+  audio.loop = true;
+  audio.volume = 0.35;
+  audio.preload = "auto";
+
+  audio.addEventListener("play", () => {
+    state.audioOn = true;
+    const button = $("musicToggle");
+    if (button) button.textContent = "Ⅱ";
+  });
+
+  audio.addEventListener("pause", () => {
+    state.audioOn = false;
+    const button = $("musicToggle");
+    if (button) button.textContent = "♫";
+  });
+
+  audio.addEventListener("error", () => {
+    console.error(
+      "No se pudo cargar helena-instrumental.mp3.",
+      audio.error
+    );
+  });
+
+  // Intento automático al abrir la aplicación.
+  startMusic();
+}
+
+async function startMusic() {
+  const audio = state.audio;
+
+  if (!audio || !audio.paused) return;
+
+  try {
+    await audio.play();
+    state.audioStarted = true;
+  } catch (error) {
+    // El navegador puede exigir una interacción del usuario.
+    console.info(
+      "La reproducción automática está bloqueada. Se reintentará al interactuar.",
+      error
+    );
+  }
+}
+
+async function toggleMusic() {
+  if (!state.audio) {
+    setupMusic();
+  }
+
+  const audio = state.audio;
+  if (!audio) return;
+
+  if (audio.paused) {
+    try {
+      await audio.play();
+      state.audioStarted = true;
+      announce("Música activada. ❤️");
+    } catch (error) {
+      console.error("Error al reproducir la música:", error);
+      announce(
+        "No se pudo reproducir la música. Comprueba el archivo de audio."
+      );
+    }
+  } else {
+    audio.pause();
+    announce("Música pausada.");
+  }
+}
+
+function $(id) {
+  return document.getElementById(id);
+}
+
 function showView(id) {
   views.forEach(v => {
-    $(v).hidden = v !== id;
+    const el = $(v);
+    if (el) el.hidden = v !== id;
   });
+
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -98,7 +195,6 @@ function setupMeter() {
 
   if (!heart || !wrap) return;
 
-  // Permite tocar el corazón o activarlo con el teclado.
   heart.setAttribute("role", "button");
   heart.setAttribute("tabindex", "0");
   heart.setAttribute("aria-label", "Corazón simbólico. Ver nivel actual");
@@ -139,9 +235,7 @@ function renderMeter() {
   }
 
   const label = $("meterValue");
-  if (label) {
-    label.textContent = `${level.toFixed(0)} %`;
-  }
+  if (label) label.textContent = `${level.toFixed(0)} %`;
 
   const heart = document.querySelector(".meter-heart");
   if (heart) {
@@ -156,7 +250,6 @@ function animateMeterHeart() {
   const heart = document.querySelector(".meter-heart");
   if (!heart) return;
 
-  // La animación no modifica ni guarda el nivel.
   if (typeof heart.animate === "function") {
     heart.animate(
       [
@@ -165,10 +258,7 @@ function animateMeterHeart() {
         { transform: "scale(0.96)" },
         { transform: "scale(1)" }
       ],
-      {
-        duration: 650,
-        easing: "ease-in-out"
-      }
+      { duration: 650, easing: "ease-in-out" }
     );
   }
 
@@ -199,9 +289,7 @@ async function loadMeter() {
   state.meterLevel = Math.max(0, Math.min(100, 50 + totalChange));
   renderMeter();
 
-  if (state.profile?.role === "admin") {
-    renderMeterHistory();
-  }
+  if (state.profile?.role === "admin") renderMeterHistory();
 }
 
 function setupAdminMeter() {
@@ -225,26 +313,14 @@ function setupAdminMeter() {
     <form id="meterForm" class="form-stack">
       <label>
         Cambio de puntos
-        <input
-          id="meterChange"
-          type="number"
-          min="-10"
-          max="10"
-          step="1"
-          value="5"
-          required
-        >
+        <input id="meterChange" type="number"
+          min="-10" max="10" step="1" value="5" required>
       </label>
       <label>
         Motivo del cambio
-        <input
-          id="meterReason"
-          type="text"
-          maxlength="500"
-          minlength="1"
-          required
-          placeholder="Escribe el motivo del cambio"
-        >
+        <input id="meterReason" type="text"
+          maxlength="500" minlength="1" required
+          placeholder="Escribe el motivo del cambio">
       </label>
       <button class="primary-button" type="submit">
         Guardar cambio
@@ -269,11 +345,7 @@ function setupAdminMeter() {
 async function submitMeterChange(event) {
   event.preventDefault();
 
-  if (
-    !state.client ||
-    !state.session ||
-    state.profile?.role !== "admin"
-  ) {
+  if (!state.client || !state.session || state.profile?.role !== "admin") {
     status("meterStatus", "No tienes permisos de administrador.", true);
     return;
   }
@@ -281,13 +353,8 @@ async function submitMeterChange(event) {
   const change = Number($("meterChange").value);
   const reason = $("meterReason").value.trim();
 
-  if (!Number.isFinite(change) || change < -10 || change > 10) {
-    status("meterStatus", "El cambio debe estar entre -10 y +10.", true);
-    return;
-  }
-
-  if (!Number.isInteger(change)) {
-    status("meterStatus", "Utiliza puntos enteros.", true);
+  if (!Number.isInteger(change) || change < -10 || change > 10) {
+    status("meterStatus", "El cambio debe ser un número entero entre -10 y +10.", true);
     return;
   }
 
@@ -301,27 +368,20 @@ async function submitMeterChange(event) {
   status("meterStatus", "Guardando cambio…");
 
   try {
-    const { error } = await state.client
-      .from("meter_events")
-      .insert({
-        created_by: state.session.user.id,
-        change,
-        reason
-      });
+    const { error } = await state.client.from("meter_events").insert({
+      created_by: state.session.user.id,
+      change,
+      reason
+    });
 
     if (error) {
       console.error(error);
-      status(
-        "meterStatus",
-        "No se pudo guardar. Verifica tu rol de administrador y las políticas de Supabase.",
-        true
-      );
+      status("meterStatus", "No se pudo guardar. Verifica tu rol y las políticas de Supabase.", true);
       return;
     }
 
     $("meterReason").value = "";
     status("meterStatus", "Cambio guardado correctamente. ❤️");
-
     await loadMeter();
   } finally {
     button.disabled = false;
@@ -332,54 +392,46 @@ function renderMeterHistory() {
   const history = $("meterHistory");
   const value = $("adminMeterValue");
 
-  if (value) {
-    value.textContent = `${state.meterLevel.toFixed(0)} %`;
-  }
-
+  if (value) value.textContent = `${state.meterLevel.toFixed(0)} %`;
   if (!history) return;
 
   if (!state.meterEvents.length) {
-    history.innerHTML =
-      '<p class="muted">Todavía no hay cambios registrados.</p>';
+    history.innerHTML = '<p class="muted">Todavía no hay cambios registrados.</p>';
     return;
   }
 
-  history.innerHTML = [...state.meterEvents]
-    .reverse()
-    .map(item => {
-      const change = Number(item.change);
-      const sign = change > 0 ? "+" : "";
+  history.innerHTML = [...state.meterEvents].reverse().map(item => {
+    const change = Number(item.change);
+    const sign = change > 0 ? "+" : "";
 
-      return `
-        <article class="entry-card">
-          <p class="entry-meta">${escapeHtml(formatDate(item.created_at))}</p>
-          <h4>${sign}${change} puntos</h4>
-          <p>${escapeHtml(item.reason)}</p>
-        </article>
-      `;
-    })
-    .join("");
+    return `
+      <article class="entry-card">
+        <p class="entry-meta">${escapeHtml(formatDate(item.created_at))}</p>
+        <h4>${sign}${change} puntos</h4>
+        <p>${escapeHtml(item.reason)}</p>
+      </article>
+    `;
+  }).join("");
 }
 
 /* INICIO Y NAVEGACIÓN */
 
 async function init() {
-  $("year").textContent = new Date().getFullYear();
-  setupMeter();
+  const year = $("year");
+  if (year) year.textContent = new Date().getFullYear();
 
-  setTimeout(() => $("splash").classList.add("hide"), 1650);
+  setupMeter();
+  setupMusic();
+
+  const splash = $("splash");
+  if (splash) setTimeout(() => splash.classList.add("hide"), 1650);
 
   $("startBtn").addEventListener("click", () => {
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
       showView("authView");
-      status(
-        "authError",
-        "Falta la configuración de Supabase en supabase-config.js.",
-        true
-      );
+      status("authError", "Falta la configuración de Supabase en supabase-config.js.", true);
       return;
     }
-
     showView("authView");
   });
 
@@ -420,6 +472,14 @@ async function init() {
   $("refreshAdmin").addEventListener("click", loadAdmin);
   $("musicToggle").addEventListener("click", toggleMusic);
 
+  // Si el navegador bloquea el autoplay, el primer toque lo reintenta.
+  const retryMusic = () => {
+    if (state.audio && state.audio.paused) startMusic();
+  };
+
+  document.addEventListener("pointerdown", retryMusic, { once: true });
+  document.addEventListener("keydown", retryMusic, { once: true });
+
   window.addEventListener("beforeinstallprompt", event => {
     event.preventDefault();
     state.deferredInstall = event;
@@ -445,7 +505,6 @@ async function init() {
     state.client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const { data, error } = await state.client.auth.getSession();
-
     if (error) console.error(error);
     if (data?.session) await onSession(data.session);
 
@@ -495,9 +554,7 @@ async function onSession(session) {
 
   state.profile = profile || { display_name: "Helena", role: "helena" };
 
-  $("helloTitle").textContent =
-    `Hola, ${state.profile.display_name || "Helena"}.`;
-
+  $("helloTitle").textContent = `Hola, ${state.profile.display_name || "Helena"}.`;
   showView("homeView");
 
   await loadLetters();
@@ -530,7 +587,6 @@ function selectNeed(key) {
 
 async function submitNeed(event) {
   event.preventDefault();
-
   if (!state.client || !state.session || !state.selectedNeed) return;
 
   status("needStatus", "Enviando…");
@@ -553,7 +609,6 @@ async function submitNeed(event) {
 
 async function submitJournal(event) {
   event.preventDefault();
-
   if (!state.client || !state.session) return;
 
   status("journalStatus", "Guardando…");
@@ -585,14 +640,12 @@ async function loadLetters() {
     .order("created_at", { ascending: false });
 
   if (error) {
-    $("lettersList").innerHTML =
-      '<p class="muted">No se pudieron cargar las cartas.</p>';
+    $("lettersList").innerHTML = '<p class="muted">No se pudieron cargar las cartas.</p>';
     return;
   }
 
   if (!data?.length) {
-    $("lettersList").innerHTML =
-      '<p class="muted">Las cartas sorpresa aparecerán aquí cuando estén preparadas para ti.</p>';
+    $("lettersList").innerHTML = '<p class="muted">Las cartas sorpresa aparecerán aquí cuando estén preparadas para ti.</p>';
     return;
   }
 
@@ -620,8 +673,7 @@ async function loadAdmin() {
   ]);
 
   if (needs.error || entries.error) {
-    $("adminEntries").innerHTML =
-      '<p class="muted">No se pudieron cargar los mensajes. Comprueba las políticas de acceso.</p>';
+    $("adminEntries").innerHTML = '<p class="muted">No se pudieron cargar los mensajes. Comprueba las políticas de acceso.</p>';
     return;
   }
 
@@ -638,7 +690,7 @@ async function loadAdmin() {
     ...entries.data.map(item => ({
       ...item,
       _type: "entry",
-      _label: item.category.replaceAll("_", " "),
+      _label: (item.category || "").replaceAll("_", " "),
       _body: item.body
     }))
   ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -656,7 +708,6 @@ async function loadAdmin() {
 
 async function submitReply(event) {
   event.preventDefault();
-
   if (state.profile?.role !== "admin" || !state.client) return;
 
   status("replyStatus", "Enviando…");
@@ -678,7 +729,6 @@ async function submitReply(event) {
 
 async function submitLetter(event) {
   event.preventDefault();
-
   if (state.profile?.role !== "admin" || !state.client) return;
 
   status("letterStatus", "Guardando…");
@@ -702,34 +752,10 @@ async function submitLetter(event) {
 }
 
 async function requestPushOptIn() {
-  // Las notificaciones son opcionales.
   const enabled = document.querySelector('meta[name="onesignal-app-id"]')?.content;
 
   if (!enabled || enabled === "REPLACE_WITH_ONESIGNAL_APP_ID") return;
   if (!("Notification" in window) || !("serviceWorker" in navigator)) return;
-}
-
-async function toggleMusic() {
-  const audio = $("ambientAudio");
-
-  if (!audio.getAttribute("src")) {
-    audio.src = "./assets/ambient.mp3";
-  }
-
-  if (!state.audioOn) {
-    try {
-      await audio.play();
-      state.audioOn = true;
-      $("musicToggle").textContent = "Ⅱ";
-      announce("Música activada.");
-    } catch {
-      announce("Añade una pista instrumental con licencia a assets/ambient.mp3 para activar la música.");
-    }
-  } else {
-    audio.pause();
-    state.audioOn = false;
-    $("musicToggle").textContent = "♫";
-  }
 }
 
 init().catch(error => {
